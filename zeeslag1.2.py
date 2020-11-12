@@ -1,7 +1,7 @@
 import random
 
 spelbordVolledig = 0 
-
+spelbordSpeler = 0
 def vraagBordSize():
     bordSizeGevonden= False
     while bordSizeGevonden == False:
@@ -10,7 +10,8 @@ def vraagBordSize():
             print("het grootste is 10")
         else:
             bordSizeGevonden = True
-            
+    return bordGroote
+def genereerBord(bordGroote):        
     bordGroote += 2
     spelbord = []
     for y in range(bordGroote):
@@ -54,6 +55,7 @@ def botenNeerzetten():
         else:
             bootTeller += 1
             spelbordVolledig[rij][kolom] = "S"
+    return spelbordVolledig
     
 
 def vraagCooridinaat():
@@ -68,6 +70,9 @@ def vraagCooridinaat():
         elif getal > len(spelbordSpeler)-2:
             coordinaatGekozen = False
             print("dat is geen goed getal")
+        elif spelbordSpeler[getal][ord(coordinaat[0])-64] =="O":
+            print("die had je al domme oeleh")
+            coordinaatGekozen = False
         else:
             coordinaatGekozen = True
     return coordinaat
@@ -92,12 +97,13 @@ def botenTeller ():
            if spelbordVolledig[rij][kolom] == "S" :    
                 botenTeller += 1
     return botenTeller
-    
+
 
 beurtenTeller = 0
-spelbordVolledig = vraagBordSize()
-spelbordSpeler = spelbordVolledig
-botenNeerzetten()
+bordGroote = vraagBordSize()
+spelbordVolledig = genereerBord(bordGroote)
+spelbordSpeler = genereerBord(bordGroote)
+spelbordVolledig = botenNeerzetten()
 while botenTeller() > 0:
     printBord()
     schieten()
