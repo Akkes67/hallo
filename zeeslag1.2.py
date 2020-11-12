@@ -10,6 +10,7 @@ def vraagBordSize():
             print("het grootste is 10")
         else:
             bordSizeGevonden = True
+            
     bordGroote += 2
     spelbord = []
     for y in range(bordGroote):
