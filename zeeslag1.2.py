@@ -32,9 +32,6 @@ def vraagBordSize():
                     spelbord[y].append('-')
     return spelbord
 
-
-
-
 def printBord():
     for rij in range(len(spelbordSpeler)):
         for kolom in range(len(spelbordSpeler[1])):
@@ -45,8 +42,8 @@ def botenNeerzetten():
     spelbordVolledig[random.randint(1,len(spelbordSpeler[1])-2)][random.randint(1,len(spelbordSpeler)-2)] = "S"
     bootTeller = 1
     while bootTeller < 4:
-        rij = random.randint(1,len(spelbordSpeler[1])-2)
-        kolom = random.randint(1,len(spelbordSpeler[1])-2)
+        rij = random.randint(1,len(spelbordVolledig[1])-2)
+        kolom = random.randint(1,len(spelbordVolledig[1])-2)
         botenInOmgeving= 0
         for i1 in range(rij-1,rij+2):
             for i2 in range(kolom-1,kolom+2):
@@ -88,7 +85,6 @@ def schieten():
         print("mis.....")
         spelbordSpeler[y][x] = "O"
 
-
 def botenTeller (): 
     botenTeller = 0
     for rij in range(len(spelbordVolledig)):
@@ -99,8 +95,8 @@ def botenTeller ():
     
 
 beurtenTeller = 0
-spelbordSpeler = vraagBordSize()
-spelbordVolledig = spelbordSpeler
+spelbordVolledig = vraagBordSize()
+spelbordSpeler = spelbordVolledig
 botenNeerzetten()
 while botenTeller() > 0:
     printBord()
