@@ -39,10 +39,10 @@ def printBord():
             print(spelbordSpeler[rij][kolom],end=" ")
         print()
 
-def botenNeerzetten():
+def botenNeerzetten(bordGroote):
     spelbordVolledig[random.randint(1,len(spelbordSpeler[1])-2)][random.randint(1,len(spelbordSpeler)-2)] = "S"
     bootTeller = 1
-    while bootTeller < 4:
+    while bootTeller < 3:
         rij = random.randint(1,len(spelbordVolledig[1])-2)
         kolom = random.randint(1,len(spelbordVolledig[1])-2)
         botenInOmgeving= 0
@@ -61,18 +61,18 @@ def botenNeerzetten():
 def vraagCooridinaat():
     coordinaatGekozen = False
     while coordinaatGekozen == False:    
-        coordinaat = input("waar wil je schieten b.v.b.:a1 of c5\n")
-        getal = int(coordinaat[1])
+        coordinaat = input("captain, waar gaan we schieten? ")
         coordinaat = coordinaat.upper()
-        if coordinaat[0] not in spelbordVolledig[0]:
-            coordinaatGekozen = False
-            print("dat is geen goede letter")
-        elif getal > len(spelbordSpeler)-2:
-            coordinaatGekozen = False
-            print("dat is geen goed getal")
-        elif spelbordSpeler[getal][ord(coordinaat[0])-64] =="O":
-            print("die had je al domme oeleh")
-            coordinaatGekozen = False
+        if len(coordinaat) != 2:
+            print("je moet 2 dingen zeggen, captain")
+        elif coordinaat[0] not in spelbordVolledig[0]:      
+            print("dat is geen correct coördinaat, captain")
+        elif coordinaat[1].isdigit() == False:
+            print("dat is geen correct coördinaat, captain")
+        elif int(coordinaat[1]) > len(spelbordSpeler)-2:
+            print("dat is geen correct coördinaat, captain")
+        elif spelbordSpeler[int(coordinaat[1])][ord(coordinaat[0])-64] !="-":
+            print("die hadden we al, captain")
         else:
             coordinaatGekozen = True
     return coordinaat
@@ -103,10 +103,10 @@ beurtenTeller = 0
 bordGroote = vraagBordSize()
 spelbordVolledig = genereerBord(bordGroote)
 spelbordSpeler = genereerBord(bordGroote)
-spelbordVolledig = botenNeerzetten()
+spelbordVolledig = botenNeerzetten(bordGroote)
 while botenTeller() > 0:
     printBord()
     schieten()
     beurtenTeller += 1
-print("het koste je maar",beurtenTeller,"beurten")
+print("het koste je maar",beurtenTeller,"schoten")
    
