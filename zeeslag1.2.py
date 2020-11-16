@@ -88,10 +88,17 @@ def schieten():
         print(random.choice(ComplimentenLijst))
         spelbordVolledig[y][x] = "G"
         spelbordSpeler[y][x] = "X"
+        return True
     else:
-        print("mis.....")
         spelbordSpeler[y][x] = "O"
-
+def tip():
+    for rij in range(len(spelbordSpeler)-2):
+        for kolom in range (len(spelbordSpeler)-2):
+            if spelbordVolledig[rij][kolom] == 'S':
+                kolomSchip = kolom
+    print("onze radars pikken iets op in kolom" , chr(kolomSchip+64))
+        
+        
 def botenTeller (): 
     botenTeller = 0
     for rij in range(len(spelbordVolledig)):
@@ -108,7 +115,8 @@ spelbordSpeler = genereerBord(bordGroote)
 spelbordVolledig = botenNeerzetten(bordGroote)
 while botenTeller() > 0:
     printBord()
-    schieten()
+    if schieten() != True:
+        tip()
     beurtenTeller += 1
 print("het koste je maar",beurtenTeller,"schoten")
    
