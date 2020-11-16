@@ -61,22 +61,24 @@ def botenNeerzetten(bordGroote):
 def vraagCooridinaat():
     coordinaatGekozen = False
     while coordinaatGekozen == False:    
-        coordinaat = input("captain, waar gaan we schieten? ")
+        coordinaat = input("waar wil je schieten b.v.b.:a1 of c5\n")
         coordinaat = coordinaat.upper()
-        if len(coordinaat) != 2:
-            print("je moet 2 dingen zeggen, captain")
-        elif coordinaat[0] not in spelbordVolledig[0]:      
-            print("dat is geen correct coördinaat, captain")
-        elif coordinaat[1].isdigit() == False:
-            print("dat is geen correct coördinaat, captain")
-        elif int(coordinaat[1]) > len(spelbordSpeler)-2:
-            print("dat is geen correct coördinaat, captain")
-        elif spelbordSpeler[int(coordinaat[1])][ord(coordinaat[0])-64] !="-":
-            print("die hadden we al, captain")
+        if coordinaat[0].isalpha() == True and coordinaat[1].isalpha() == False:
+            getal = int(coordinaat[1])
+            if coordinaat[0] not in spelbordVolledig[0]:
+                coordinaatGekozen = False
+                print("dat is geen goede letter")
+            elif getal > len(spelbordSpeler)-2:
+                coordinaatGekozen = False
+                print("dat is geen goed getal")
+            elif spelbordSpeler[getal][ord(coordinaat[0])-64] =="O":
+                print("die had je al domme oeleh")
+                coordinaatGekozen = False
+            else:
+                coordinaatGekozen = True
         else:
-            coordinaatGekozen = True
+            print("je moet een letter en een getal kiezen")
     return coordinaat
-
 def schieten():
     ComplimentenLijst = ["goedzo", "Raak!!!", "Lekker Bezig!"]
     coordinaat = vraagCooridinaat()
