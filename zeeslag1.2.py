@@ -6,8 +6,8 @@ def vraagBordSize():
     bordSizeGevonden= False
     while bordSizeGevonden == False:
         bordGroote = int(input('hoe lang moet de zijkant van je spelbord zijn '))
-        if bordGroote > 10:
-            print("het grootste is 10")
+        if bordGroote > 10 or bordGroote < 5:
+            print("tussen 1 en 11")
         else:
             bordSizeGevonden = True
     return bordGroote
@@ -42,7 +42,7 @@ def printBord():
 def botenNeerzetten(bordGroote):
     spelbordVolledig[random.randint(1,len(spelbordSpeler[1])-2)][random.randint(1,len(spelbordSpeler)-2)] = "S"
     bootTeller = 1
-    while bootTeller < 3:
+    while bootTeller < bordGroote:
         rij = random.randint(1,len(spelbordVolledig[1])-2)
         kolom = random.randint(1,len(spelbordVolledig[1])-2)
         botenInOmgeving= 0
