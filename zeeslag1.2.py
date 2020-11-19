@@ -1,7 +1,8 @@
 import random
 
-spelbordVolledig = 0 
-spelbordSpeler = 0
+def vraagAantalSpelers():
+    aantalSpelers = int(input("hoeveel spelers zijn er?"))
+    return aantalSpelers
 def vraagBordSize():
     bordSizeGevonden= False
     while bordSizeGevonden == False:
@@ -39,9 +40,11 @@ def printBord():
             print(spelbordSpeler[rij][kolom],end=" ")
         print()
 
-def botenNeerzetten(bordGroote):
+def kleineBotenNeerzetten(bordGroote):
     spelbordVolledig[random.randint(1,len(spelbordSpeler[1])-2)][random.randint(1,len(spelbordSpeler)-2)] = "S"
     bootTeller = 1
+    if bordGroote > 7 :
+        bordGroote = round(bordGroote/2,0)
     while bootTeller < bordGroote:
         rij = random.randint(1,len(spelbordVolledig[1])-2)
         kolom = random.randint(1,len(spelbordVolledig[1])-2)
@@ -57,14 +60,66 @@ def botenNeerzetten(bordGroote):
             spelbordVolledig[rij][kolom] = "S"
     return spelbordVolledig
     
+def groteBootCoordinaat(bordGroote):
+    print("61")
+    coordinaatGekozen = False
+    while coordinaatGekozen == False:
+        richting = random.randint(0,1)
+        if richting == 0:
+            x = random.randint(1, bordGroote)
+            y = random.randint(2, bordGroote-1)
+            print(x,y)
+            botenInOmgeving = 0
+            for i1 in range(y-2,y+3):
+                for i2 in range(x-1,x+2):
+                    if spelbordVolledig[i1][i2] == "S":
+                        botenInOmgeving +=1
+                        print("er is een boot")
+            if botenInOmgeving == 0:
+                coordinaatGekozen = True
+        else:
+            x = random.randint(2, bordGroote-1)
+            y = random.randint(1, bordGroote)
+            print(x,y)
+            botenInOmgeving = 0
+            for i1 in range(y-1,y+2):
+                for i2 in range(x-2,x+3):
+                    if spelbordVolledig[i1][i2] == "S":
+                        botenInOmgeving +=1
+                        print("er is een boot")
+            if botenInOmgeving == 0:
+                coordinaatGekozen = True
+    print("85")
+   
+    return x,y,richting
 
+def groteBotenNeerzetten(bordGroote):
+    aantalBoten = 0
+    while aantalBoten < 3:
+        rawCoordinaat = groteBootCoordinaat(bordGroote)
+        print(rawCoordinaat)
+        x = rawCoordinaat[0]
+        y = rawCoordinaat[1]
+        richting = rawCoordinaat[2]
+        if richting == 0:
+            for i1 in range(y-1,y+2):
+                spelbordVolledig[i1][x] = "S"
+        else:
+            for i1 in range(x-1,x+2):
+                spelbordVolledig[y][i1] = "S" 
+        aantalBoten+=1
+    return spelbordVolledig
 def vraagCooridinaat():
     coordinaatGekozen = False
     while coordinaatGekozen == False:    
         coordinaat = input("waar wil je schieten b.v.b.:a1 of c5\n")
         coordinaat = coordinaat.upper()
         if coordinaat[0].isalpha() == True and coordinaat[1].isalpha() == False:
-            getal = int(coordinaat[1])
+            if coordinaat[1] == "1" and len(coordinaat)>2:
+                getal = 10
+            else:
+                getal = coordinaat[1]
+                getal = int(getal)
             if coordinaat[0] not in spelbordVolledig[0]:
                 coordinaatGekozen = False
                 print("dat is geen goede letter")
@@ -82,8 +137,12 @@ def vraagCooridinaat():
 def schieten():
     ComplimentenLijst = ["goedzo", "Raak!!!", "Lekker Bezig!"]
     coordinaat = vraagCooridinaat()
+
     x = int(ord(coordinaat[0]))-64
-    y = int(coordinaat[1])
+    if len(coordinaat)==2:    
+        y = int(coordinaat[1])
+    else:
+        y = 10
     if spelbordVolledig[y][x] == "S":
         print(random.choice(ComplimentenLijst))
         spelbordVolledig[y][x] = "G"
@@ -91,6 +150,7 @@ def schieten():
         return True
     else:
         spelbordSpeler[y][x] = "O"
+        return False
 def tip():
     for rij in range(len(spelbordSpeler)-2):
         for kolom in range (len(spelbordSpeler)-2):
@@ -107,16 +167,28 @@ def botenTeller ():
                 botenTeller += 1
     return botenTeller
 
+def opslaanProgressie(spelbordVolledig , spelbordSpeler):
+    opslagFile = open("save.txt" , "w")
+    opslagFile.write(str(spelbordVolledig))
+    opslagFile.write("\n")
+    opslagFile.write(str(spelbordSpeler))
+    opslagFile.close()
 
-beurtenTeller = 0
-bordGroote = vraagBordSize()
-spelbordVolledig = genereerBord(bordGroote)
-spelbordSpeler = genereerBord(bordGroote)
-spelbordVolledig = botenNeerzetten(bordGroote)
-while botenTeller() > 0:
-    printBord()
-    if schieten() != True:
-        tip()
-    beurtenTeller += 1
-print("het koste je maar",beurtenTeller,"schoten")
-   
+if vraagAantalSpelers() == 1:
+    beurtenTeller = 0
+    bordGroote = vraagBordSize()
+    spelbordVolledig = genereerBord(bordGroote)
+    spelbordSpeler = genereerBord(bordGroote)
+    if bordGroote < 7:
+        spelbordVolledig = kleineBotenNeerzetten(bordGroote)
+    else:
+        spelbordVolledig = groteBotenNeerzetten(bordGroote)
+    while botenTeller()>0:
+        printBord()
+        opslaanProgressie(spelbordSpeler , spelbordVolledig)
+        if schieten() == True:
+            tip()
+        beurtenTeller += 1
+    print("het koste je", beurtenTeller, " beurten")
+
+
