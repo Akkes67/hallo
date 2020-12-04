@@ -1,7 +1,7 @@
 import random
 
 def vraagAantalSpelers():
-    aantalSpelers = int(input("hoeveel spelers zijn er?"))
+    aantalSpelers = int(input("hoeveel spelers zijn er? \n"))
     return aantalSpelers
 def vraagBordSize():
     bordSizeGevonden= False
@@ -61,7 +61,7 @@ def kleineBotenNeerzetten(bordGroote):
     return spelbordVolledig
     
 def groteBootCoordinaat(bordGroote):
-    print("61")
+
     coordinaatGekozen = False
     while coordinaatGekozen == False:
         richting = random.randint(0,1)
@@ -74,7 +74,6 @@ def groteBootCoordinaat(bordGroote):
                 for i2 in range(x-1,x+2):
                     if spelbordVolledig[i1][i2] == "S":
                         botenInOmgeving +=1
-                        print("er is een boot")
             if botenInOmgeving == 0:
                 coordinaatGekozen = True
         else:
@@ -86,7 +85,6 @@ def groteBootCoordinaat(bordGroote):
                 for i2 in range(x-2,x+3):
                     if spelbordVolledig[i1][i2] == "S":
                         botenInOmgeving +=1
-                        print("er is een boot")
             if botenInOmgeving == 0:
                 coordinaatGekozen = True
     print("85")
@@ -167,28 +165,100 @@ def botenTeller ():
                 botenTeller += 1
     return botenTeller
 
-def opslaanProgressie(spelbordVolledig , spelbordSpeler):
+def opslaanProgressie(spelbordSpeler , spelbordVolledig , bordGroote):
     opslagFile = open("save.txt" , "w")
-    opslagFile.write(str(spelbordVolledig))
+    opslagFile.write(str(bordGroote))
     opslagFile.write("\n")
-    opslagFile.write(str(spelbordSpeler))
+    for i in range(len(spelbordSpeler[0])):
+        for i2 in range(len(spelbordSpeler[0])):
+            opslagFile.write(str(spelbordSpeler[i][i2]))
+            opslagFile.write(",")
+        opslagFile.write("\n")
+    for i in range(len(spelbordVolledig[0])):
+        for i2 in range(len(spelbordVolledig[0])):
+            opslagFile.write(str(spelbordVolledig[i][i2]))
+            opslagFile.write(",")
+        opslagFile.write("\n")
+    opslagFile.write(str(beurtenTeller))
     opslagFile.close()
 
-if vraagAantalSpelers() == 1:
-    beurtenTeller = 0
-    bordGroote = vraagBordSize()
-    spelbordVolledig = genereerBord(bordGroote)
-    spelbordSpeler = genereerBord(bordGroote)
-    if bordGroote < 7:
-        spelbordVolledig = kleineBotenNeerzetten(bordGroote)
+def importerenOpslagfile(teller):
+    opslagFile = open("save.txt" , "r")
+    spelbordSpeler = []
+    spelbordVolledig = []
+    #bordGroote = int(opslagFile.readline())
+    #for i in range (bordGroote+2):
+    #    bordRegel = opslagFile.readline()
+    #    
+    #    for i1 in range (bordGroote+2):
+    #        spelbordSpeler = bordRegel[i1]
+    if teller == 0:
+        bordGroote = int(opslagFile.readline())
+        return bordGroote
+    elif teller == 1:
+        bordGroote = int(opslagFile.readline())
+        for i in range(bordGroote+2):
+            bordRegel = opslagFile.readline()
+            bordRegel = bordRegel.split(",")
+            bordRegel.pop()
+            spelbordSpeler.append(bordRegel)
+        return spelbordSpeler
+    elif teller == 2:
+        bordGroote = int(opslagFile.readline())
+        print(bordGroote)
+        for i in range(bordGroote+2):
+            a = opslagFile.readline()
+        for i in range(bordGroote+2):
+            bordRegel = opslagFile.readline()
+            bordRegel = bordRegel.split(",")
+            bordRegel.pop()
+            spelbordVolledig.append(bordRegel)
+        return spelbordVolledig
+    elif teller == 3:
+        bordGroote = int(opslagFile.readline())
+        for i in range((bordGroote+2)*2):
+            a = opslagFile.readline()
+        beurtenTeller = int(opslagFile.readline())
+        return beurtenTeller
+
+
+def vragenVerdergaan():
+    verdergaan = str(input("wil je verdergaan? ja of nee?\n"))
+    if verdergaan == "ja":
+        return True
     else:
-        spelbordVolledig = groteBotenNeerzetten(bordGroote)
+        return False
+
+if vraagAantalSpelers() == 1:
+    if vragenVerdergaan() == False:
+        beurtenTeller = 0
+        bordGroote = vraagBordSize()
+        spelbordVolledig = genereerBord(bordGroote)
+        spelbordSpeler = genereerBord(bordGroote)
+        if bordGroote < 7:
+            spelbordVolledig = kleineBotenNeerzetten(bordGroote)
+        else:
+            spelbordVolledig = groteBotenNeerzetten(bordGroote)
+            spelbordVolledig = kleineBotenNeerzetten(bordGroote)
+
+    else:
+        for i in range (4):
+            if i == 0:
+                bordGroote = importerenOpslagfile(i)
+            elif i == 1:
+                spelbordSpeler = importerenOpslagfile(i)
+            elif i == 2:
+                spelbordVolledig = importerenOpslagfile(i)
+            else:
+                beurtenTeller = importerenOpslagfile(i)
+        
+
+    
     while botenTeller()>0:
         printBord()
-        opslaanProgressie(spelbordSpeler , spelbordVolledig)
-        if schieten() == True:
+        opslaanProgressie(spelbordSpeler , spelbordVolledig, bordGroote)
+        if schieten() == False:
             tip()
         beurtenTeller += 1
+
     print("het koste je", beurtenTeller, " beurten")
-
-
